@@ -1,0 +1,19 @@
+/* TEAM */
+Name: IGGrabber Team
+Site: https://iggrabber.com
+Twitter: @iggrabber
+
+/* SITE */
+Name: IGGrabber - Free Instagram Reel Downloader
+Description: Download Instagram Reels instantly without login
+Last update: 2026-04-01
+Language: English
+Standards: HTML5, CSS3, JavaScript
+Components: Express.js, yt-dlp
+License: MIT
+
+/* THANKS */
+Built with yt-dlp and Express.js
+
+/* CONTACT */
+Email: hello@iggrabber.com

@@ -1,0 +1,3 @@
+# ads.txt file for authorized digital sellers
+# For ad network participation and verification
+# Contact: ads@iggrabber.com

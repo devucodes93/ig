@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IGGrabber - Free Instagram Reel Downloader (No Login)</title>
+    <meta
+      name="description"
+      content="Download Instagram Reels instantly without login. Free, fast, and no watermarks. Download videos in HD quality. Works with Instagram Reels, Posts, and Stories."
+    />
+    <meta
+      name="keywords"
+      content="instagram reel downloader, download reels, instagram video downloader, reel saver, ig downloader, free instagram downloader, download instagram videos, reel grabber"
+    />
+    <meta name="author" content="IGGrabber" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <link rel="canonical" href="https://iggrabber.com/" />
+
+    <!-- Open Graph Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://iggrabber.com/" />
+    <meta
+      property="og:title"
+      content="IGGrabber - Free Instagram Reel Downloader"
+    />
+    <meta
+      property="og:description"
+      content="Download Instagram Reels instantly without login. Free, fast, and no watermarks. Download videos in HD quality."
+    />
+    <meta property="og:image" content="https://iggrabber.com/og-image.png" />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://iggrabber.com/" />
+    <meta
+      name="twitter:title"
+      content="IGGrabber - Free Instagram Reel Downloader"
+    />
+    <meta
+      name="twitter:description"
+      content="Download Instagram Reels instantly without login. Free, fast, no watermarks."
+    />
+    <meta name="twitter:image" content="https://iggrabber.com/og-image.png" />
+
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#ff3c6e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Preconnect to fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0a0a0f;
+        --surface: #111118;
+        --card: #16161f;
+        --border: rgba(255, 255, 255, 0.07);
+        --accent: #ff3c6e;
+        --accent2: #ff8c42;
+        --accent3: #a259ff;
+        --text: #f0f0f5;
+        --muted: #6b6b80;
+        --success: #00d68f;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ── NOISE TEXTURE OVERLAY ── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 999;
+        opacity: 0.4;
+      }
+
+      /* ── GRADIENT BLOBS ── */
+      .blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.12;
+        pointer-events: none;
+        animation: drift 18s ease-in-out infinite alternate;
+      }
+      .blob-1 {
+        width: 600px;
+        height: 600px;
+        background: var(--accent);
+        top: -200px;
+        left: -200px;
+      }
+      .blob-2 {
+        width: 500px;
+        height: 500px;
+        background: var(--accent3);
+        bottom: -150px;
+        right: -150px;
+        animation-delay: -9s;
+      }
+      .blob-3 {
+        width: 300px;
+        height: 300px;
+        background: var(--accent2);
+        top: 40%;
+        left: 50%;
+        animation-delay: -4s;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(30px, 40px) scale(1.08);
+        }
+      }
+
+      /* ── LAYOUT ── */
+      .container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ── HEADER ── */
+      header {
+        padding: 52px 0 0;
+        text-align: center;
+      }
+
+      .logo-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 60, 110, 0.12);
+        border: 1px solid rgba(255, 60, 110, 0.25);
+        border-radius: 100px;
+        padding: 6px 16px;
+        font-size: 11px;
+        font-family: "DM Mono", monospace;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 28px;
+      }
+
+      .logo-badge span {
+        width: 6px;
+        height: 6px;
+        background: var(--accent);
+        border-radius: 50%;
+        display: block;
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.7);
+        }
+      }
+
+      h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(64px, 12vw, 110px);
+        line-height: 0.92;
+        letter-spacing: 0.01em;
+        background: linear-gradient(
+          135deg,
+          #fff 30%,
+          #ff3c6e 60%,
+          #a259ff 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 14px;
+      }
+
+      .tagline {
+        color: var(--muted);
+        font-size: 15px;
+        font-weight: 300;
+        letter-spacing: 0.02em;
+        margin-bottom: 48px;
+      }
+
+      /* ── INPUT CARD ── */
+      .input-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px;
+        margin-bottom: 24px;
+        backdrop-filter: blur(20px);
+        transition: border-color 0.3s;
+      }
+      .input-card:focus-within {
+        border-color: rgba(255, 60, 110, 0.35);
+      }
+
+      .input-label {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-family: "DM Mono", monospace;
+        color: var(--muted);
+        margin-bottom: 12px;
+        display: block;
+      }
+
+      .input-row {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+      }
+
+      .url-input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-family: "DM Mono", monospace;
+        font-size: 13.5px;
+        color: var(--text);
+        outline: none;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .url-input::placeholder {
+        color: var(--muted);
+      }
+      .url-input:focus {
+        border-color: rgba(255, 60, 110, 0.5);
+        background: rgba(255, 60, 110, 0.04);
+      }
+
+      .btn-fetch {
+        background: linear-gradient(135deg, var(--accent), #c4185a);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 22px;
+        color: #fff;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s,
+          opacity 0.2s;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-fetch:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 28px rgba(255, 60, 110, 0.35);
+      }
+      .btn-fetch:active {
+        transform: translateY(0);
+      }
+      .btn-fetch:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-fetch svg {
+        transition: transform 0.3s;
+      }
+      .btn-fetch:hover svg {
+        transform: rotate(15deg);
+      }
+
+      /* ── LOADING ── */
+      .loader {
+        display: none;
+        text-align: center;
+        padding: 40px;
+      }
+      .loader.active {
+        display: block;
+      }
+      .loader-ring {
+        width: 48px;
+        height: 48px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 16px;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .loader p {
+        color: var(--muted);
+        font-size: 13px;
+        font-family: "DM Mono", monospace;
+      }
+
+      /* ── RESULT CARD ── */
+      .result-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 24px;
+        animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: none;
+      }
+      .result-card.visible {
+        display: block;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .result-thumb {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        display: block;
+        background: var(--surface);
+      }
+
+      .result-body {
+        padding: 22px 24px;
+      }
+
+      .result-title {
+        font-size: 17px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        line-height: 1.3;
+      }
+
+      .result-meta {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        font-family: "DM Mono", monospace;
+        color: var(--muted);
+        margin-bottom: 22px;
+      }
+      .result-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      /* ── FORMAT SELECTOR ── */
+      .section-title {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-family: "DM Mono", monospace;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .formats-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .format-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .format-option:hover {
+        border-color: rgba(255, 60, 110, 0.3);
+        background: rgba(255, 60, 110, 0.05);
+      }
+      .format-option input[type="radio"] {
+        accent-color: var(--accent);
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+      .format-option.selected {
+        border-color: rgba(255, 60, 110, 0.4);
+        background: rgba(255, 60, 110, 0.08);
+      }
+
+      .format-info {
+        flex: 1;
+      }
+      .format-res {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .format-note {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+      }
+
+      .format-size {
+        font-size: 11px;
+        font-family: "DM Mono", monospace;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 3px 10px;
+        border-radius: 100px;
+      }
+
+      /* ── DOWNLOAD BTN ── */
+      .btn-download {
+        width: 100%;
+        background: linear-gradient(135deg, #00d68f, #00a86b);
+        border: none;
+        border-radius: 14px;
+        padding: 16px;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        color: #0a0a0f;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition:
+          transform 0.15s,
+          box-shadow 0.2s,
+          opacity 0.2s;
+        letter-spacing: 0.01em;
+      }
+      .btn-download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 32px rgba(0, 214, 143, 0.3);
+      }
+      .btn-download:active {
+        transform: translateY(0);
+      }
+      .btn-download:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* ── ERROR ── */
+      .error-box {
+        background: rgba(255, 60, 110, 0.08);
+        border: 1px solid rgba(255, 60, 110, 0.25);
+        border-radius: 14px;
+        padding: 16px 20px;
+        font-size: 13px;
+        color: #ff8aaa;
+        display: none;
+        gap: 10px;
+        align-items: flex-start;
+        font-family: "DM Mono", monospace;
+        margin-bottom: 16px;
+      }
+      .error-box.visible {
+        display: flex;
+        animation: slideUp 0.3s ease;
+      }
+      .error-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      /* ── PROGRESS ── */
+      .progress-wrap {
+        display: none;
+        margin-bottom: 12px;
+      }
+      .progress-wrap.active {
+        display: block;
+      }
+      .progress-label {
+        font-size: 11px;
+        font-family: "DM Mono", monospace;
+        color: var(--muted);
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .progress-bar {
+        height: 4px;
+        background: var(--border);
+        border-radius: 100px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent3));
+        border-radius: 100px;
+        width: 0%;
+        transition: width 0.3s;
+        animation: shimmer 1.5s ease-in-out infinite;
+      }
+      @keyframes shimmer {
+        0% {
+          filter: brightness(1);
+        }
+        50% {
+          filter: brightness(1.3);
+        }
+        100% {
+          filter: brightness(1);
+        }
+      }
+
+      /* ── HOW IT WORKS ── */
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 48px 0;
+      }
+      .step {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+      }
+      .step-num {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 40px;
+        background: linear-gradient(135deg, var(--accent), var(--accent3));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+      .step h3 {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .step p {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        text-align: center;
+        padding: 40px 0 60px;
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        line-height: 1.8;
+      }
+      footer a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 520px) {
+        .steps {
+          grid-template-columns: 1fr;
+        }
+        .input-row {
+          flex-direction: column;
+        }
+        .btn-fetch {
+          justify-content: center;
+        }
+        h1 {
+          font-size: 72px;
+        }
+      }
+
+      /* ── PASTE HINT ── */
+      .paste-hint {
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        margin-top: 12px;
+      }
+      .paste-hint kbd {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        padding: 1px 6px;
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="container">
+      <header>
+        <div class="logo-badge"><span></span> No Login Required</div>
+        <h1>IGGrabber</h1>
+        <p class="tagline">
+          Download Instagram Reels instantly — no account, no watermarks,
+          completely free.
+        </p>
+      </header>
+
+      <!-- INPUT CARD -->
+      <div class="input-card">
+        <label class="input-label">Paste Instagram Reel URL</label>
+        <div class="input-row">
+          <input
+            class="url-input"
+            id="urlInput"
+            type="url"
+            placeholder="https://www.instagram.com/reel/..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="btn-fetch" id="fetchBtn" onclick="fetchInfo()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            Fetch
+          </button>
+        </div>
+        <p class="paste-hint">
+          Tip: press <kbd>Ctrl+V</kbd> to paste, then hit Fetch
+        </p>
+      </div>
+
+      <!-- ERROR -->
+      <div class="error-box" id="errorBox">
+        <span class="error-icon">⚠️</span>
+        <span id="errorMsg">Something went wrong.</span>
+      </div>
+
+      <!-- LOADER -->
+      <div class="loader" id="loader">
+        <div class="loader-ring"></div>
+        <p id="loaderMsg">Fetching reel info...</p>
+      </div>
+
+      <!-- RESULT CARD -->
+      <div class="result-card" id="resultCard">
+        <img class="result-thumb" id="thumb" src="" alt="Thumbnail" />
+        <div class="result-body">
+          <div class="result-title" id="rTitle"></div>
+          <div class="result-meta" id="rMeta"></div>
+
+          <div class="section-title">Choose Quality</div>
+          <div class="formats-list" id="formatsList"></div>
+
+          <div class="progress-wrap" id="progressWrap">
+            <div class="progress-label">
+              <span id="progressLabel">Preparing download…</span
+              ><span id="progressPct"></span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <button
+            class="btn-download"
+            id="downloadBtn"
+            onclick="startDownload()"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Reel
+          </button>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Copy URL</h3>
+          <p>Open Instagram, tap Share → Copy Link on any Reel</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>Paste &amp; Fetch</h3>
+          <p>Paste the link here and hit Fetch to preview</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>Download</h3>
+          <p>Pick your quality and grab the MP4 file</p>
+        </div>
+      </div>
+
+      <footer>
+        IGGrabber — Free Instagram video downloader<br /><br />
+
+        <a href="/about.html">About</a> |
+        <a href="/how-it-works.html">How it Works</a> |
+        <a href="/privacy-policy.html">Privacy Policy</a>
+      </footer>
+      <section style="margin: 60px 0; line-height: 1.7; color: #ccc">
+        <h2>What is IGGrabber?</h2>
+        <p>
+          IGGrabber is a free Instagram reel downloader that allows users to
+          download videos without login or watermark. It works with reels,
+          posts, and videos in high quality.
+        </p>
+
+        <h2>Why use IGGrabber?</h2>
+        <ul>
+          <li>No login required</li>
+          <li>Fast downloads</li>
+          <li>HD quality videos</li>
+          <li>No watermark</li>
+        </ul>
+
+        <h2>Is it safe?</h2>
+        <p>
+          Yes. We do not store your data or downloaded content. Everything is
+          processed securely.
+        </p>
+      </section>
+    </div>
+
+    <script>
+      // Structured Data (Schema.org JSON-LD)
+      const schemaData = {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        name: "IGGrabber",
+        description:
+          "Free Instagram Reel Downloader - Download reels instantly without login",
+        url: "https://iggrabber.com",
+        applicationCategory: "UtilityApplication",
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+        },
+        creator: {
+          "@type": "Organization",
+          name: "IGGrabber",
+        },
+      };
+      document.head.appendChild(
+        Object.assign(document.createElement("script"), {
+          type: "application/ld+json",
+          textContent: JSON.stringify(schemaData),
+        }),
+      );
+
+      const API = ""; // empty = same origin (relative URLs)
+      let currentFormats = [];
+      let currentUrl = "";
+
+      const $ = (id) => document.getElementById(id);
+
+      // Auto-detect paste
+      $("urlInput").addEventListener("paste", () => {
+        setTimeout(() => {
+          const val = $("urlInput").value.trim();
+          if (val.includes("instagram.com")) fetchInfo();
+        }, 100);
+      });
+
+      $("urlInput").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") fetchInfo();
+      });
+
+      function showError(msg) {
+        $("errorMsg").textContent = msg;
+        $("errorBox").classList.add("visible");
+      }
+      function hideError() {
+        $("errorBox").classList.remove("visible");
+      }
+
+      function setLoading(active, msg = "Fetching reel info...") {
+        $("loader").classList.toggle("active", active);
+        $("loaderMsg").textContent = msg;
+        $("fetchBtn").disabled = active;
+      }
+
+      async function fetchInfo() {
+        const url = $("urlInput").value.trim();
+        if (!url) return;
+
+        hideError();
+        $("resultCard").classList.remove("visible");
+        setLoading(true);
+
+        try {
+          const res = await fetch(
+            `${API}/api/info?url=${encodeURIComponent(url)}`,
+          );
+          const data = await res.json();
+
+          if (!res.ok) throw new Error(data.error || "Failed to fetch info");
+
+          currentUrl = url;
+          currentFormats = data.formats || [];
+
+          // Thumbnail
+          const thumb = $("thumb");
+          if (data.thumbnail) {
+            thumb.src = data.thumbnail;
+            thumb.style.display = "block";
+          } else {
+            thumb.style.display = "none";
+          }
+
+          // Title
+          $("rTitle").textContent = data.title || "Instagram Reel";
+
+          // Meta
+          const meta = [];
+          if (data.uploader)
+            meta.push(`<span>👤 ${escHtml(data.uploader)}</span>`);
+          if (data.duration)
+            meta.push(`<span>⏱ ${formatDur(data.duration)}</span>`);
+          meta.push(
+            `<span>📹 ${currentFormats.length} format${currentFormats.length !== 1 ? "s" : ""}</span>`,
+          );
+          $("rMeta").innerHTML = meta.join("");
+
+          // Formats
+          const list = $("formatsList");
+          list.innerHTML = "";
+          if (currentFormats.length === 0) {
+            list.innerHTML =
+              "<p style=\"color:var(--muted);font-size:13px;font-family:'DM Mono',monospace\">No separate formats found — will download best available.</p>";
+          } else {
+            currentFormats.forEach((f, i) => {
+              const div = document.createElement("label");
+              div.className = "format-option" + (i === 0 ? " selected" : "");
+              div.innerHTML = `
+              <input type="radio" name="fmt" value="${escHtml(f.format_id)}" ${i === 0 ? "checked" : ""} onchange="selectFormat(this)" />
+              <div class="format-info">
+                <div class="format-res">${escHtml(f.resolution)} <span style="color:var(--muted);font-weight:400;font-size:12px">.${escHtml(f.ext)}</span></div>
+                <div class="format-note">${escHtml(f.note || f.format_id)}</div>
+              </div>
+              ${f.filesize ? `<span class="format-size">${fmtSize(f.filesize)}</span>` : ""}
+            `;
+              list.appendChild(div);
+            });
+          }
+
+          $("resultCard").classList.add("visible");
+          $("resultCard").scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+        } catch (e) {
+          showError(
+            e.message || "Could not fetch reel. Check the URL and try again.",
+          );
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      function selectFormat(radio) {
+        document
+          .querySelectorAll(".format-option")
+          .forEach((el) => el.classList.remove("selected"));
+        radio.closest(".format-option").classList.add("selected");
+      }
+
+      async function startDownload() {
+        const btn = $("downloadBtn");
+        const progress = $("progressWrap");
+        const fill = $("progressFill");
+        const label = $("progressLabel");
+
+        const radio = document.querySelector('input[name="fmt"]:checked');
+        const fmt = radio ? radio.value : "";
+
+        btn.disabled = true;
+        progress.classList.add("active");
+        label.textContent = "Starting download…";
+        fill.style.width = "10%";
+
+        try {
+          // Animate progress while waiting
+          let pct = 10;
+          const timer = setInterval(() => {
+            pct = Math.min(pct + Math.random() * 8, 85);
+            fill.style.width = pct + "%";
+            if (pct > 40) label.textContent = "Downloading from Instagram…";
+            if (pct > 65) label.textContent = "Processing video…";
+          }, 600);
+
+          const url = `${API}/api/download?url=${encodeURIComponent(currentUrl)}${fmt ? "&format=" + encodeURIComponent(fmt) : ""}`;
+          const res = await fetch(url);
+          clearInterval(timer);
+
+          if (!res.ok) {
+            const err = await res
+              .json()
+              .catch(() => ({ error: "Download failed." }));
+            throw new Error(err.error);
+          }
+
+          fill.style.width = "95%";
+          label.textContent = "Saving file…";
+
+          const blob = await res.blob();
+          fill.style.width = "100%";
+          label.textContent = "Done! ✓";
+
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = `reel_${Date.now()}.mp4`;
+          a.click();
+          URL.revokeObjectURL(a.href);
+
+          setTimeout(() => {
+            progress.classList.remove("active");
+            fill.style.width = "0%";
+            btn.disabled = false;
+          }, 2000);
+        } catch (e) {
+          progress.classList.remove("active");
+          btn.disabled = false;
+          showError(e.message || "Download failed. The reel may be private.");
+        }
+      }
+
+      function formatDur(s) {
+        const m = Math.floor(s / 60),
+          sec = Math.floor(s % 60);
+        return `${m}:${sec.toString().padStart(2, "0")}`;
+      }
+
+      function fmtSize(b) {
+        if (b > 1e6) return (b / 1e6).toFixed(1) + " MB";
+        if (b > 1e3) return (b / 1e3).toFixed(0) + " KB";
+        return b + " B";
+      }
+
+      function escHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+    </script>
+  </body>
+</html>

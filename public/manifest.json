@@ -1,0 +1,49 @@
+{
+  "name": "IGGrabber - Instagram Reel Downloader",
+  "short_name": "IGGrabber",
+  "description": "Free Instagram reel downloader - download videos instantly without login",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#ff3c6e",
+  "background_color": "#0a0a0f",
+  "categories": ["utilities", "productivity"],
+  "screenshots": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Download Reel",
+      "short_name": "Download",
+      "description": "Quick access to download Instagram reels",
+      "url": "/?action=download",
+      "icons": [{ "src": "/favicon.png", "sizes": "192x192" }]
+    }
+  ]
+}
