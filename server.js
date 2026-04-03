@@ -53,7 +53,7 @@ app.use(
 
 app.use(
   cors({
-    origin: "*", // Allow all origins (for testing, adjust in production)
+    origin: "https://insta-reel-downloader-gamma.vercel.app", // Allow all origins (for testing, adjust in production)
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   }),
