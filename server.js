@@ -117,14 +117,20 @@ app.get("/api/info", (req, res) => {
     url,
   ];
 
-  const yt = spawn("yt-dlp", args);
+  const yt = spawn("python3", ["-m", "yt_dlp", ...args]);
 
   let data = "";
   let error = "";
 
   yt.stdout.on("data", (chunk) => (data += chunk));
   yt.stderr.on("data", (chunk) => (error += chunk));
-
+  yt.on("error", (err) => {
+    console.error("SPAWN ERROR:", err.message);
+    return res.status(500).json({
+      error: "yt-dlp not available",
+      detail: err.message,
+    });
+  });
   yt.on("close", () => {
     if (!data) {
       console.error("INFO ERROR:", error);

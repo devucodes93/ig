@@ -1,7 +1,7 @@
 services:
   - type: web
-    name: iggrabber
-    env: node
+    name: ig-backend
+    runtime: node
     buildCommand: |
       pip install yt-dlp
       npm install
