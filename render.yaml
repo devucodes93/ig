@@ -3,8 +3,11 @@ services:
     name: ig-backend
     runtime: node
     buildCommand: |
-      curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /opt/render/project/src/yt-dlp
-      chmod +x /opt/render/project/src/yt-dlp
-      ls -l /opt/render/project/src
+      echo "Downloading yt-dlp..."
+      curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o yt-dlp
+      chmod +x yt-dlp
+      echo "Checking file..."
+      ls -l
+      ./yt-dlp --version
       npm install
     startCommand: node server.js
