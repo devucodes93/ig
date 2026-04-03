@@ -111,7 +111,7 @@ app.get("/api/info", (req, res) => {
     url,
   ];
 
-  const yt = spawn("yt-dlp", args);
+  const yt = spawn("python3", ["-m", "yt_dlp", ...args]);
 
   let data = "";
   let error = "";

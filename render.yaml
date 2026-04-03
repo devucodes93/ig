@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: iggrabber
+    env: node
+    buildCommand: |
+      pip install yt-dlp
+      npm install
+    startCommand: node server.js
