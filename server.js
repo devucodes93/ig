@@ -98,7 +98,7 @@ app.get("/api/info", (req, res) => {
   res.set("Expires", "0");
 
   if (!isValidInstagramUrl(url)) {
-    return res.status(400).json({ error: "Invalid Instagram URL" });
+    return res.status(400).json({ error: "Invald Instagram URL" });
   }
 
   const args = [
