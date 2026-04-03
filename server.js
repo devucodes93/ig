@@ -51,7 +51,13 @@ app.use(
   }),
 );
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // Allow all origins (for testing, adjust in production)
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  }),
+);
 app.use(express.json());
 
 // ✅ safer URL validation
