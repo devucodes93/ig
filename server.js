@@ -121,7 +121,7 @@ app.get("/api/info", async (req, res) => {
       duration: info.duration,
       uploader: info.uploader || "Unknown",
       formats: (info.formats || [])
-        .filter((f) => f.vcodec !== "none")
+        .filter((f) => f.vcodec !== "none" && f.acodec !== "none")
         .map((f) => ({
           format_id: f.format_id,
           ext: f.ext,
@@ -165,6 +165,7 @@ app.get("/api/download", async (req, res) => {
 
   const fileName = `reel_${Date.now()}.mp4`;
   const tmpFile = path.join(os.tmpdir(), fileName);
+  const formatSelector = format || "best[acodec!=none][vcodec!=none]/best";
 
   try {
     await ytDlp.exec(
@@ -173,7 +174,7 @@ app.get("/api/download", async (req, res) => {
         cookies: COOKIES_PATH,
         userAgent: "Mozilla/5.0",
         noPlaylist: true,
-        f: format || "bestvideo+bestaudio/best",
+        f: formatSelector,
         mergeOutputFormat: "mp4",
         o: tmpFile,
       },
