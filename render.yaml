@@ -5,7 +5,9 @@ services:
     buildCommand: |
       apt-get update
       apt-get install -y python3 python3-pip
-      python3 -m pip install yt-dlp
+      python3 --version
+      pip3 --version
+      pip3 install yt-dlp
       python3 -m yt_dlp --version
       npm install
     startCommand: node server.js
