@@ -3,6 +3,7 @@ services:
     name: ig-backend
     runtime: node
     buildCommand: |
-      python3 -m pip install yt-dlp
+      curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o yt-dlp
+      chmod +x yt-dlp
       npm install
     startCommand: node server.js
