@@ -1,9 +1,9 @@
 const express = require("express");
-const { exec } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
 const cors = require("cors");
+const ytDlp = require("yt-dlp-exec");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -51,13 +51,7 @@ app.use(
   }),
 );
 
-app.use(
-  cors({
-    origin: "https://insta-reel-downloader-gamma.vercel.app", // Allow all origins (for testing, adjust in production)
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-  }),
-);
+app.use(cors());
 app.use(express.json());
 
 // ✅ safer URL validation
@@ -94,8 +88,7 @@ app.get("/.well-known/security.txt", (req, res) => {
 });
 
 // ================= INFO =================
-const { spawn } = require("child_process");
-app.get("/api/info", (req, res) => {
+app.get("/api/info", async (req, res) => {
   const { url } = req.query;
 
   // Set no-cache for API responses
@@ -104,72 +97,47 @@ app.get("/api/info", (req, res) => {
   res.set("Expires", "0");
 
   if (!isValidInstagramUrl(url)) {
-    return res.status(400).json({ error: "Invald Instagram URL" });
+    return res.status(400).json({ error: "Invalid Instagram URL" });
   }
 
-  const args = [
-    "--cookies",
-    COOKIES_PATH,
-    "--user-agent",
-    "Mozilla/5.0",
-    "--no-playlist",
-    "--dump-json",
-    url,
-  ];
-
-  const yt = spawn("python3", ["-m", "yt_dlp", ...args]);
-
-  let data = "";
-  let error = "";
-
-  yt.stdout.on("data", (chunk) => (data += chunk));
-  yt.stderr.on("data", (chunk) => (error += chunk));
-  yt.on("error", (err) => {
-    console.error("SPAWN ERROR:", err.message);
-    return res.status(500).json({
-      error: "yt-dlp not available",
-      detail: err.message,
+  try {
+    const info = await ytDlp(url, {
+      cookies: COOKIES_PATH,
+      userAgent: "Mozilla/5.0",
+      noPlaylist: true,
+      dumpJson: true,
     });
-  });
-  yt.on("close", () => {
-    if (!data) {
-      console.error("INFO ERROR:", error);
-      return res.status(500).json({
-        error: "Failed to fetch info",
-        detail: error.slice(0, 200),
-      });
-    }
 
-    try {
-      const info = JSON.parse(data);
+    console.log("THUMB DEBUG:", info.thumbnail); // 👈 DEBUG
 
-      console.log("THUMB DEBUG:", info.thumbnail); // 👈 DEBUG
+    const thumbnail =
+      info.thumbnail || info.thumbnails?.[info.thumbnails.length - 1]?.url;
 
-      const thumbnail =
-        info.thumbnail || info.thumbnails?.[info.thumbnails.length - 1]?.url;
-
-      res.json({
-        title: info.title || "Instagram Reel",
-        thumbnail: thumbnail
-          ? `/api/thumb?url=${encodeURIComponent(thumbnail)}`
-          : null,
-        duration: info.duration,
-        uploader: info.uploader || "Unknown",
-        formats: (info.formats || [])
-          .filter((f) => f.vcodec !== "none")
-          .map((f) => ({
-            format_id: f.format_id,
-            ext: f.ext,
-            resolution: f.resolution || `${f.width}x${f.height}`,
-            filesize: f.filesize || f.filesize_approx || null,
-          }))
-          .slice(-5)
-          .reverse(),
-      });
-    } catch (e) {
-      res.status(500).json({ error: "Parsing failed" });
-    }
-  });
+    res.json({
+      title: info.title || "Instagram Reel",
+      thumbnail: thumbnail
+        ? `/api/thumb?url=${encodeURIComponent(thumbnail)}`
+        : null,
+      duration: info.duration,
+      uploader: info.uploader || "Unknown",
+      formats: (info.formats || [])
+        .filter((f) => f.vcodec !== "none")
+        .map((f) => ({
+          format_id: f.format_id,
+          ext: f.ext,
+          resolution: f.resolution || `${f.width}x${f.height}`,
+          filesize: f.filesize || f.filesize_approx || null,
+        }))
+        .slice(-5)
+        .reverse(),
+    });
+  } catch (err) {
+    console.error("INFO ERROR:", err?.stderr || err?.message || err);
+    res.status(500).json({
+      error: "Failed to fetch info",
+      detail: (err?.stderr || err?.message || "Unknown error").slice(0, 200),
+    });
+  }
 });
 app.get("/api/thumb", async (req, res) => {
   try {
@@ -183,7 +151,7 @@ app.get("/api/thumb", async (req, res) => {
   }
 });
 // ================= DOWNLOAD =================
-app.get("/api/download", (req, res) => {
+app.get("/api/download", async (req, res) => {
   const { url, format } = req.query;
 
   // Set no-cache for downloads
@@ -198,18 +166,19 @@ app.get("/api/download", (req, res) => {
   const fileName = `reel_${Date.now()}.mp4`;
   const tmpFile = path.join(os.tmpdir(), fileName);
 
-  const formatArg = format ? `-f "${format}"` : "-f bestvideo+bestaudio/best";
-
-  const cmd = `yt-dlp --cookies "${COOKIES_PATH}" --user-agent "Mozilla/5.0" --no-playlist ${formatArg} --merge-output-format mp4 -o "${tmpFile}" "${url}"`;
-
-  exec(cmd, { timeout: 120000 }, (err, stdout, stderr) => {
-    if (err) {
-      console.error("DOWNLOAD ERROR:", stderr);
-      return res.status(500).json({
-        error: "Download failed",
-        detail: stderr.slice(0, 200),
-      });
-    }
+  try {
+    await ytDlp.exec(
+      url,
+      {
+        cookies: COOKIES_PATH,
+        userAgent: "Mozilla/5.0",
+        noPlaylist: true,
+        f: format || "bestvideo+bestaudio/best",
+        mergeOutputFormat: "mp4",
+        o: tmpFile,
+      },
+      { timeout: 120000 },
+    );
 
     if (!fs.existsSync(tmpFile)) {
       return res.status(500).json({ error: "File not found" });
@@ -218,7 +187,14 @@ app.get("/api/download", (req, res) => {
     res.download(tmpFile, fileName, () => {
       fs.unlink(tmpFile, () => {});
     });
-  });
+  } catch (err) {
+    const stderr = err?.stderr || err?.message || "Unknown error";
+    console.error("DOWNLOAD ERROR:", stderr);
+    return res.status(500).json({
+      error: "Download failed",
+      detail: stderr.slice(0, 200),
+    });
+  }
 });
 
 // ================= START =================
